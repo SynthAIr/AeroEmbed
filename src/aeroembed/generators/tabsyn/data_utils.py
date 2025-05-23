@@ -74,14 +74,14 @@ def preprocess(dataset_path, task_type='regression', inverse=False, cat_encoding
         X_num = dataset.X_num
         X_cat = dataset.X_cat
 
-        X_train_num, X_test_num = X_num['train'], X_num['test']
-        X_train_cat, X_test_cat = X_cat['train'], X_cat['test']
+        X_train_num= X_num['train']
+        X_train_cat = X_cat['train']
         
         categories = get_categories(X_train_cat)
         d_numerical = X_train_num.shape[1]
 
-        X_num = (X_train_num, X_test_num)
-        X_cat = (X_train_cat, X_test_cat)
+        X_num = X_train_num
+        X_cat = X_train_cat
 
         if inverse:
             num_inverse = dataset.num_transform.inverse_transform
@@ -132,7 +132,7 @@ def make_dataset(data_path, T, task_type, change_val=False, concat=True):
         X_num = {} if os.path.exists(os.path.join(data_path, 'X_num_train.npy')) else None
         y = {} if os.path.exists(os.path.join(data_path, 'y_train.npy')) else None
 
-        for split in ['train', 'test']:
+        for split in ['train']:
             X_num_t, X_cat_t, y_t = read_pure_data(data_path, split)
             if X_num is not None:
                 X_num[split] = X_num_t
@@ -148,7 +148,7 @@ def make_dataset(data_path, T, task_type, change_val=False, concat=True):
         X_num = {} if os.path.exists(os.path.join(data_path, 'X_num_train.npy')) else None
         y = {} if os.path.exists(os.path.join(data_path, 'y_train.npy')) else None
 
-        for split in ['train', 'test']:
+        for split in ['train']:
             X_num_t, X_cat_t, y_t = read_pure_data(data_path, split)
 
             if X_num is not None:

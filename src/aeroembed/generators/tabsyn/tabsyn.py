@@ -114,8 +114,8 @@ class TabSyn:
             train_data, task_type=info['task_type']
         )
         
-        X_train_num, _ = X_num
-        X_train_cat, _ = X_cat
+        X_train_num= X_num
+        X_train_cat= X_cat
         
         # Keep data on CPU for the dataset
         X_train_num = torch.tensor(X_train_num).float()
