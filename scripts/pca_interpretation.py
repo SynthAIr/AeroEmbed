@@ -9,7 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 
-from syntabair.preprocessing import preprocess_flight_data_for_prediction
+from aeroembed.preprocessing import preprocess_flight_data_for_prediction
 
 
 # Configuration constants

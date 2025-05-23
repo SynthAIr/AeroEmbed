@@ -12,7 +12,7 @@ import umap.umap_ as umap
 import hdbscan
 import seaborn as sns  # For color palette fallback
 
-from syntabair.preprocessing import preprocess_flight_data_for_prediction
+from aeroembed.preprocessing import preprocess_flight_data_for_prediction
 
 
 # Add the custom color palette function

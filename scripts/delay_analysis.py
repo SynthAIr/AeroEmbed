@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde
 import umap.umap_ as umap
 
-from syntabair.preprocessing import preprocess_flight_data_for_prediction
+from aeroembed.preprocessing import preprocess_flight_data_for_prediction
 
 # Configuration constants
 DEFAULT_OUTPUT_DIR = Path("./embeddings/delay_patterns")

@@ -12,7 +12,7 @@ from matplotlib.lines import Line2D
 from sklearn.cluster import SpectralClustering
 from sklearn.metrics.pairwise import cosine_similarity
 
-from syntabair.preprocessing import preprocess_flight_data_for_prediction
+from aeroembed.preprocessing import preprocess_flight_data_for_prediction
 
 
 # Configuration constants
