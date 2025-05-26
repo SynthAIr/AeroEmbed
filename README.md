@@ -1,10 +1,19 @@
-# AeroEmbed: TabSyn Embeddings for Flight Operations Analysis
+# AeroEmbed: Embeddings for Flight Operations Analysis
 
-A framework for extracting and analyzing embeddings from flight operational data using TabSyn, a state-of-the-art mixed-type tabular data synthesizer. This repository demonstrates how latent representations learned during synthetic data generation can be leveraged for operational insights in Air Traffic Management (ATM).
+A framework for extracting and analyzing embeddings from flight operational data using TabSyn, a mixed-type tabular data synthesizer. This repository demonstrates how latent representations learned during synthetic data generation can be leveraged for operational insights in Air Traffic Management (ATM).
 
 ## Overview
 
 AeroEmbed transforms flight operational data (mixed categorical and numerical features) into unified vector representations that capture essential patterns and relationships. The framework provides tools for training TabSyn models on flight data, extracting embeddings, and conducting comprehensive analysis across multiple operational dimensions.
+
+
+Figure 1 illustrate the practical process for extracting and analyzing TabSyn embeddings. The figure highlights that only the encoder and embedding components are necessary for analysis, while the decoder and diffusion components (used for generation) are not part of the embedding extraction process.
+
+   <div align="center">
+     <img src=".figures/tabsyn_emb.svg" width="800" height="400" />
+     <br>◊
+     <em>Figure 1: TabSyn Embedding Extraction Process.</em>
+   </div>
 
 ### Key Capabilities
 
