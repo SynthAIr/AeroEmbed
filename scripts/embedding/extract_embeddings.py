@@ -83,6 +83,7 @@ def load_training_data_info(model_dir):
     # Load training data to understand format
     X_num_train = np.load(os.path.join(dataset_dir, 'X_num_train.npy'), allow_pickle=True)
     X_cat_train = np.load(os.path.join(dataset_dir, 'X_cat_train.npy'), allow_pickle=True)
+    y_train     = np.load(os.path.join(dataset_dir, 'y_train.npy'),     allow_pickle=True)
     
     # Create categorical mappings
     cat_mappings = []
@@ -95,117 +96,84 @@ def load_training_data_info(model_dir):
         'num_std': X_num_train.std(axis=0),
         'cat_mappings': cat_mappings,
         'X_num_train': X_num_train,
-        'X_cat_train': X_cat_train
+        'X_cat_train': X_cat_train,
+        'y_train': y_train
     }
 
 
 def preprocess_data(data_path, info, train_info):
     """
-    Preprocess the data to match the training data format.
-    
-    Args:
-        data_path: Path to the data CSV file
-        info: Model info containing column mappings
-        train_info: Information about training data format
-        
-    Returns:
-        tuple: (X_num, X_cat) as numpy arrays ready for encoding
+    Preprocess input CSV to match TabSyn training format.
     """
-    # Load data
-    data_df = pd.read_csv(data_path)
-    
-    # Check if this is flight data based on columns
-    flight_columns = ["IATA_CARRIER_CODE", "DEPARTURE_IATA_AIRPORT_CODE", "ARRIVAL_IATA_AIRPORT_CODE"]
-    is_flight_data = all(col in data_df.columns for col in flight_columns)
-    
-    if is_flight_data:
-        # Use flight-specific preprocessing
-        data_df = preprocess_flight_data(data_df)
-    
-    # Get column information
-    num_col_idx = info['num_col_idx']
-    cat_col_idx = info['cat_col_idx'] 
-    target_col_idx = info['target_col_idx']
-    
-    # Prepare data arrays
-    all_data = []
-    
-    # Add target first if regression (numerical)
-    if info['task_type'] == 'regression':
-        target_data = data_df.iloc[:, target_col_idx].astype(np.float32).to_numpy().reshape(-1, 1)
-        all_data.append(('num', target_data))
-    
-    # Add numerical features
-    if num_col_idx:
-        num_data = data_df.iloc[:, num_col_idx].astype(np.float32).to_numpy()
-        all_data.append(('num', num_data))
-    
-    # Add target if classification (categorical)
-    if info['task_type'] != 'regression':
-        target_data = data_df.iloc[:, target_col_idx].astype(str).to_numpy().reshape(-1, 1)
-        all_data.append(('cat', target_data))
-    
-    # Add categorical features
-    if cat_col_idx:
-        cat_data = data_df.iloc[:, cat_col_idx].astype(str).to_numpy()
-        all_data.append(('cat', cat_data))
-    
-    # Combine numerical features
-    num_parts = [data for dtype, data in all_data if dtype == 'num']
-    if num_parts:
-        X_num = np.concatenate(num_parts, axis=1)
-    else:
-        X_num = np.empty((len(data_df), 0), dtype=np.float32)
-    
-    # Combine categorical features
-    cat_parts = [data for dtype, data in all_data if dtype == 'cat']
-    if cat_parts:
-        X_cat_raw = np.concatenate(cat_parts, axis=1)
-    else:
-        X_cat_raw = np.empty((len(data_df), 0), dtype=object)
-    
-    # Normalize numerical features using quantile transformation
+    df = pd.read_csv(data_path)
+
+    # Detect flight data and apply flight-specific preprocessing
+    flight_cols = [
+        'IATA_CARRIER_CODE', 'DEPARTURE_IATA_AIRPORT_CODE', 'ARRIVAL_IATA_AIRPORT_CODE'
+    ]
+    if all(col in df.columns for col in flight_cols):
+        df = preprocess_flight_data(df)
+
+    # Column indices from info.json
+    num_idx    = info['num_col_idx']
+    cat_idx    = info['cat_col_idx']
+    tgt_idx    = info['target_col_idx']
+    task_type  = info['task_type']
+
+    # Build numeric matrix (include target first for regression)
+    num_parts = []
+    if task_type == 'regression':
+        y = df.iloc[:, tgt_idx].astype(np.float32).to_numpy().reshape(-1,1)
+        num_parts.append(y)
+    if num_idx:
+        Xn = df.iloc[:, num_idx].astype(np.float32).to_numpy()
+        num_parts.append(Xn)
+    X_num = np.concatenate(num_parts, axis=1) if num_parts else np.empty((len(df),0), dtype=np.float32)
+
+    # Build raw categorical matrix (include target for classification)
+    cat_parts = []
+    if task_type != 'regression':
+        y_cat = df.iloc[:, tgt_idx].astype(str).to_numpy().reshape(-1,1)
+        cat_parts.append(y_cat)
+    if cat_idx:
+        Xc = df.iloc[:, cat_idx].astype(str).to_numpy()
+        cat_parts.append(Xc)
+    X_cat_raw = np.concatenate(cat_parts, axis=1) if cat_parts else np.empty((len(df),0), dtype=object)
+
+    # Quantile-transform numeric features using training distribution
     if X_num.shape[1] > 0:
-        # Check if training data is normalized
-        train_mean = train_info['X_num_train'].mean()
-        train_std = train_info['X_num_train'].std()
-        
-        if abs(train_mean) < 0.5 and 0.5 < train_std < 2:
-            # Apply quantile transformation
-            qt = QuantileTransformer(
-                output_distribution='normal',
-                n_quantiles=max(min(train_info['X_num_train'].shape[0] // 30, 1000), 10),
-                subsample=int(1e9),
-                random_state=0
-            )
-            qt.fit(train_info['X_num_train'])
-            X_num = qt.transform(X_num)
-    
-    # Encode categorical features
+        if task_type == 'regression':
+            full_train = np.concatenate([
+                train_info['y_train'],
+                train_info['X_num_train']
+            ], axis=1)
+        else:
+            full_train = train_info['X_num_train']
+
+        qt = QuantileTransformer(
+            output_distribution='normal',
+            n_quantiles=max(min(full_train.shape[0]//30, 1000), 10),
+            subsample=int(1e9),
+            random_state=0
+        )
+        qt.fit(full_train)
+        X_num = qt.transform(X_num)
+
+    # Ordinally encode categorical features
     if X_cat_raw.shape[1] > 0:
-        # Use OrdinalEncoder to match TabSyn's approach
-        X_cat_encoded = np.zeros((X_cat_raw.shape[0], X_cat_raw.shape[1]), dtype=np.int64)
-        
-        for col_idx in range(X_cat_raw.shape[1]):
-            # Get unique values from training data
-            train_unique = train_info['cat_mappings'][col_idx]
-            
-            # Create encoding
-            for row_idx in range(X_cat_raw.shape[0]):
-                val = X_cat_raw[row_idx, col_idx]
-                # Find index in training unique values
-                idx = np.where(train_unique == val)[0]
-                if len(idx) > 0:
-                    X_cat_encoded[row_idx, col_idx] = idx[0]
-                else:
-                    # Unseen category - use max index + 1
-                    X_cat_encoded[row_idx, col_idx] = len(train_unique)
-        
-        X_cat = X_cat_encoded
+        unknown_val = np.iinfo(np.int64).max - 3
+        oe = OrdinalEncoder(
+            handle_unknown='use_encoded_value',
+            unknown_value=unknown_val,
+            dtype=np.int64
+        )
+        oe.fit(train_info['X_cat_train'])
+        X_cat = oe.transform(X_cat_raw).astype(np.int64)
     else:
-        X_cat = np.empty((len(data_df), 0), dtype=np.int64)
-    
+        X_cat = np.empty((len(df),0), dtype=np.int64)
+
     return X_num, X_cat
+
 
 
 def extract_embeddings(
