@@ -15,7 +15,7 @@ from aeroembed.preprocessing import preprocess_flight_data_for_prediction
 # Configuration constants
 DEFAULT_OUTPUT_DIR = Path("./results/pca_interpretation")
 DEFAULT_RANDOM_SEED = 42
-DEFAULT_SAMPLE_SIZE = 100_000
+DEFAULT_SAMPLE_SIZE = None
 DEFAULT_N_COMPONENTS = 6
 
 
@@ -39,7 +39,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR,
                         help=f"Directory to save outputs (default: {DEFAULT_OUTPUT_DIR})")
     parser.add_argument("--sample-size", type=int, default=DEFAULT_SAMPLE_SIZE,
-                        help=f"Number of records to sample (default: {DEFAULT_SAMPLE_SIZE})")
+                        help="Number of records to sample (default: use all data)")
     parser.add_argument("--n-components", type=int, default=DEFAULT_N_COMPONENTS,
                         help=f"Number of PCA components to analyze (default: {DEFAULT_N_COMPONENTS})")
     parser.add_argument("--seed", type=int, default=DEFAULT_RANDOM_SEED,

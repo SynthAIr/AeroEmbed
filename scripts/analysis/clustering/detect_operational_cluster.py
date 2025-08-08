@@ -40,7 +40,7 @@ def get_custom_color_palette(num_colors: int) -> List[Tuple[float, float, float]
 # Configuration constants
 DEFAULT_OUTPUT_DIR = Path("./results/cluster_analysis")
 DEFAULT_RANDOM_SEED = 42
-DEFAULT_SAMPLE_SIZE = 100_000
+DEFAULT_SAMPLE_SIZE = None
 DEFAULT_UMAP_MIN_DIST = 0.1
 DEFAULT_UMAP_N_NEIGHBORS = 15
 DEFAULT_MAX_CLUSTERS = 10
@@ -69,7 +69,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR,
                         help=f"Directory to save outputs (default: {DEFAULT_OUTPUT_DIR})")
     parser.add_argument("--sample-size", type=int, default=DEFAULT_SAMPLE_SIZE,
-                        help=f"Number of records to sample (default: {DEFAULT_SAMPLE_SIZE})")
+                        help="Number of records to sample (default: use all data)")
     parser.add_argument("--min-dist", type=float, default=DEFAULT_UMAP_MIN_DIST,
                         help=f"UMAP min_dist parameter (default: {DEFAULT_UMAP_MIN_DIST})")
     parser.add_argument("--n-neighbors", type=int, default=DEFAULT_UMAP_N_NEIGHBORS,

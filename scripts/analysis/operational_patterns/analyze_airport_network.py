@@ -21,7 +21,7 @@ DEFAULT_RANDOM_SEED = 42
 DEFAULT_SIMILARITY_THRESHOLD = 0.9
 MIN_AIRPORT_FLIGHTS = 10
 MAX_CLUSTERS = 5
-DEFAULT_SAMPLE_SIZE = 500_000
+DEFAULT_SAMPLE_SIZE = None
 
 
 def setup_logging():
@@ -42,7 +42,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR,
                         help=f"Directory to save outputs (default: {DEFAULT_OUTPUT_DIR})")
     parser.add_argument("--sample-size", type=int, default=DEFAULT_SAMPLE_SIZE,
-                        help=f"Number of records to sample (default: {DEFAULT_SAMPLE_SIZE})")
+                        help="Number of records to sample (default: use all data)")
     parser.add_argument("--seed", type=int, default=DEFAULT_RANDOM_SEED,
                         help=f"Random seed (default: {DEFAULT_RANDOM_SEED})")
     parser.add_argument("--threshold", type=float, default=DEFAULT_SIMILARITY_THRESHOLD,

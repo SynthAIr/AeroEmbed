@@ -14,7 +14,7 @@ from aeroembed.preprocessing import preprocess_flight_data_for_prediction
 # Configuration constants
 DEFAULT_OUTPUT_DIR = Path("./results/route")
 DEFAULT_RANDOM_SEED = 42
-DEFAULT_SAMPLE_SIZE = 2_000_000
+DEFAULT_SAMPLE_SIZE = None
 DEFAULT_TOP_ROUTES = 6
 DEFAULT_PERPLEXITY = 30
 DEFAULT_TSNE_ITERATIONS = 1000
@@ -40,7 +40,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR,
                         help=f"Directory to save outputs (default: {DEFAULT_OUTPUT_DIR})")
     parser.add_argument("--sample-size", type=int, default=DEFAULT_SAMPLE_SIZE,
-                        help=f"Number of records to sample (default: {DEFAULT_SAMPLE_SIZE})")
+                        help="Number of records to sample (default: use all data)")
     parser.add_argument("--top-routes", type=int, default=DEFAULT_TOP_ROUTES,
                         help=f"Number of top routes to visualize (default: {DEFAULT_TOP_ROUTES})")
     parser.add_argument("--perplexity", type=int, default=DEFAULT_PERPLEXITY,
