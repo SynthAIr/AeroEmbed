@@ -12,7 +12,7 @@ import umap.umap_ as umap
 from aeroembed.preprocessing import preprocess_flight_data_for_prediction
 
 # Configuration constants
-DEFAULT_OUTPUT_DIR = Path("./embeddings/delay_patterns")
+DEFAULT_OUTPUT_DIR = Path("./results/delay_patterns")
 DEFAULT_RANDOM_SEED = 42
 DEFAULT_SAMPLE_SIZE = 200_000
 DEFAULT_UMAP_MIN_DIST = 0.1

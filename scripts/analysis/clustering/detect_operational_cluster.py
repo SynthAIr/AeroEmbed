@@ -38,7 +38,7 @@ def get_custom_color_palette(num_colors: int) -> List[Tuple[float, float, float]
 
 
 # Configuration constants
-DEFAULT_OUTPUT_DIR = Path("./embeddings/cluster_analysis")
+DEFAULT_OUTPUT_DIR = Path("./results/cluster_analysis")
 DEFAULT_RANDOM_SEED = 42
 DEFAULT_SAMPLE_SIZE = 100_000
 DEFAULT_UMAP_MIN_DIST = 0.1

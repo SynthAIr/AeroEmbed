@@ -16,7 +16,7 @@ from aeroembed.preprocessing import preprocess_flight_data_for_prediction
 
 
 # Configuration constants
-DEFAULT_OUTPUT_DIR = Path("./embeddings/airport_network_visualizations")
+DEFAULT_OUTPUT_DIR = Path("./results/airport_network_visualizations")
 DEFAULT_RANDOM_SEED = 42
 DEFAULT_SIMILARITY_THRESHOLD = 0.9
 MIN_AIRPORT_FLIGHTS = 10

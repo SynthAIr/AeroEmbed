@@ -13,7 +13,7 @@ from aeroembed.preprocessing import preprocess_flight_data_for_prediction
 
 
 # Configuration constants
-DEFAULT_OUTPUT_DIR = Path("./embeddings/embedding_navigation")
+DEFAULT_OUTPUT_DIR = Path("./results/embedding_navigation")
 DEFAULT_RANDOM_SEED = 42
 DEFAULT_SAMPLE_SIZE = 100_000
 

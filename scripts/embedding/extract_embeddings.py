@@ -3,7 +3,7 @@
 Extract embeddings from tabular data using a trained TabSyn model.
 
 Usage:
-    python extract_embeddings.py --data_path data/new_data.csv --model_dir models/tabsyn --output_path embeddings/new_data_embeddings.npy
+    python extract_embeddings.py --data_path data/new_data.csv --model_dir models/tabsyn --output_path extracted_embeddings/new_data_embeddings.npy
 """
 
 import os
@@ -307,7 +307,7 @@ def main():
     # If no output path specified, create one based on input
     if args.output_path is None:
         input_name = Path(args.data_path).stem
-        args.output_path = f"embeddings/{input_name}_embeddings.npy"
+        args.output_path = f"extracted_embeddings/{input_name}_embeddings.npy"
     
     # Extract embeddings
     embeddings = extract_embeddings(
@@ -331,7 +331,7 @@ if __name__ == "__main__":
 
 
 # Example usage:
-# python scripts/embedding/extract_embeddings.py --data_path data/new_flights.csv --model_dir models/tabsyn --output_path embeddings/new_flights_embeddings.npy
+# python scripts/embedding/extract_embeddings.py --data_path data/new_flights.csv --model_dir models/tabsyn --output_path extracted_embeddings/new_flights_embeddings.npy
 #
 # Extract embeddings from test data:
 # python scripts/embedding/extract_embeddings.py --data_path ../syntabair/data/real/test.csv --model_dir models/tabsyn

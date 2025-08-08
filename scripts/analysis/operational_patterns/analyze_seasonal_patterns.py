@@ -12,7 +12,7 @@ from aeroembed.preprocessing import preprocess_flight_data_for_prediction
 
 
 # Configuration constants
-DEFAULT_OUTPUT_DIR = Path("./embeddings/seasonal_patterns")
+DEFAULT_OUTPUT_DIR = Path("./results/seasonal_patterns")
 DEFAULT_RANDOM_SEED = 42
 DEFAULT_SAMPLE_SIZE = 100_000
 DEFAULT_UMAP_MIN_DIST = 0.1
